@@ -1,0 +1,24 @@
+{
+  "name": "bickerboard-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PE5I/bickerboard-backend.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/PE5I/bickerboard-backend/issues"
+  },
+  "homepage": "https://github.com/PE5I/bickerboard-backend#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.0",
+    "sequelize": "^6.31.1"
+  }
+}
