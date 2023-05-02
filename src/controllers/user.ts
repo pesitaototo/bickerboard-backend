@@ -1,6 +1,8 @@
-import { Post, Topic, User } from "../models"
+import { Post, Topic, User } from '../models'
 
-const router = require('express').Router()
+import express from 'express'
+const router = express.Router()
+// const router = require('express').Router()
 
 router.get('/', async (req, res) => {
   const users = await User.findAll({
@@ -15,3 +17,5 @@ router.get('/', async (req, res) => {
   })
   res.json(users)
 })
+
+export default router
