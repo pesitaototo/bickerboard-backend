@@ -3,10 +3,13 @@ import Topic from "./topic";
 import User from "./user";
 
 User.hasMany(Post)
+Post.belongsTo(User)
+
 User.hasMany(Topic)
 Topic.belongsTo(User)
+
+Topic.hasMany(Post)
 Post.belongsTo(Topic)
-Post.belongsTo(User)
 
 export {
   User, Topic, Post

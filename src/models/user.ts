@@ -14,7 +14,7 @@ User.init({
     validate: {
       is: {
         args: ['^[a-z\d]+$', 'i'],
-        msg: 'sername must be alphanumeric'
+        msg: 'Username must be alphanumeric'
       },
       max: {
         args: [20],
