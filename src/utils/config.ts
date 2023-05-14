@@ -1,4 +1,6 @@
+import dotenv from 'dotenv'
+dotenv.config()
 
-export default {
-  DATABASE_URL: process.env.DATABASE_URL
-}
+export const DATABASE_URL = process.env.DATABASE_URL || "hi"
+
+// console.log("env", process.env);

@@ -4,6 +4,7 @@
     "password": "bicker-pass",
     "database": "postgres",
     "host": "127.0.0.1",
-    "dialect": "postgresql"
+    "dialect": "postgresql",
+    "port": "5433"
   }
 }

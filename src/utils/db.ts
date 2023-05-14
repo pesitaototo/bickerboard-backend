@@ -1,17 +1,18 @@
 import { Sequelize } from "sequelize";
 import { SequelizeStorage, Umzug } from "umzug";
 
-const { DATABASE_URL } = require('./config')
+import { DATABASE_URL } from './config'
 
+// console.log("DATABASE_URL: ", DATABASE_URL);
 const sequelize = new Sequelize(DATABASE_URL)
 
 const connectToDatabase = async () => {
   try {
     await sequelize.authenticate()
-    await runMigrations()
+    // await runMigrations()
     console.log(`Connected to database at ${DATABASE_URL}`);
   } catch (err) {
-    console.log('FAILED to connect to Database', err);
+    console.log('FAILED to connect to Database.... ', err);
     return process.exit(1)
   }
 
