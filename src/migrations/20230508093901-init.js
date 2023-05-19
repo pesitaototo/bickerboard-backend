@@ -3,7 +3,7 @@ const { DataTypes } = require('sequelize');
 
 /* @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up (queryInterface, Sequelize) {
+  async up ({ context: queryInterface }) {
     await queryInterface.createTable('users', {
       id: {
         type: DataTypes.INTEGER,
@@ -12,6 +12,8 @@ module.exports = {
       },
       handle: {
         type: DataTypes.STRING(20),
+        allowNull: false,
+        unique: true,
         validate: {
           is: {
             args: ['^[a-z\d]+$', 'i'],
@@ -29,14 +31,16 @@ module.exports = {
       },
       email: {
         type: DataTypes.STRING(320),
+        allowNull: false,
         validate: {
-          isEmail: true
+          isEmail: true,
         }
       },
       password_hash: {
         type: DataTypes.TEXT,
+        allowNull: false,
       },
-      is_admin: {
+      is_admin  : {
         type: DataTypes.BOOLEAN,
         defaultValue: false
       },
@@ -100,7 +104,7 @@ module.exports = {
     })
   },
 
-  async down (queryInterface, Sequelize) {
+  async down ({ context: queryInterface }) {
     await queryInterface.removeColumn('posts', 'user_id')
     await queryInterface.removeColumn('topics', 'user_id')
     await queryInterface.removeColumn('posts', 'topic_id')
