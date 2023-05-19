@@ -11,6 +11,8 @@ User.init({
   },
   handle: {
     type: DataTypes.STRING(20),
+    allowNull: false,
+    unique: true,
     validate: {
       is: {
         args: ['^[a-z\d]+$', 'i'],
@@ -34,6 +36,7 @@ User.init({
   },
   passwordHash: {
     type: DataTypes.TEXT,
+    allowNull: false,
   },
   isAdmin: {
     type: DataTypes.BOOLEAN,
