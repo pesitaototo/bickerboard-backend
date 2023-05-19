@@ -1,17 +1,17 @@
 version: '3.8'
 
 services:
-  devdb:
+  testdb:
     image: postgres
     restart: always
     ports:
-      - 5433:5432
+      - 5434:5432
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: bicker-pass
     volumes:
-      - devVolume:/var/lib/postgresql/data
+      - testVolume:/var/lib/postgresql/data
 
 volumes:
-  devVolume:
+  testVolume:
     driver: local
