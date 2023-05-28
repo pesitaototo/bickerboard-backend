@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable no-undef */
 const { DataTypes } = require('sequelize');
 
 
@@ -16,7 +18,7 @@ module.exports = {
         unique: true,
         validate: {
           is: {
-            args: ['^[a-z\d]+$', 'i'],
+            args: ['^[a-z0-9]+$', 'i'],
             msg: 'Username must be alphanumeric'
           },
           max: {
@@ -56,7 +58,7 @@ module.exports = {
         type: DataTypes.DATE,
         defaultValue: new Date()
       }
-    })
+    });
     await queryInterface.createTable('topics', {
       id: {
         type: DataTypes.INTEGER,
@@ -71,7 +73,7 @@ module.exports = {
         type: DataTypes.DATE,
         defaultValue: new Date()
       }
-    })
+    });
     await queryInterface.createTable('posts', {
       id: {
         type: DataTypes.INTEGER,
@@ -86,30 +88,30 @@ module.exports = {
         type: DataTypes.DATE,
         defaultValue: new Date()
       }
-    })
+    });
     await queryInterface.addColumn('posts', 'user_id', {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: { model: 'users', key: 'id' }
-    })
+    });
     await queryInterface.addColumn('posts', 'topic_id', {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: { model: 'topics', key: 'id' }
-    })
+    });
     await queryInterface.addColumn('topics', 'user_id', {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: { model: 'users', key: 'id' }
-    })
+    });
   },
 
   async down ({ context: queryInterface }) {
-    await queryInterface.removeColumn('posts', 'user_id')
-    await queryInterface.removeColumn('topics', 'user_id')
-    await queryInterface.removeColumn('posts', 'topic_id')
-    await queryInterface.dropTable('users')
-    await queryInterface.dropTable('topics')
-    await queryInterface.dropTable('posts')
+    await queryInterface.removeColumn('posts', 'user_id');
+    await queryInterface.removeColumn('topics', 'user_id');
+    await queryInterface.removeColumn('posts', 'topic_id');
+    await queryInterface.dropTable('users');
+    await queryInterface.dropTable('topics');
+    await queryInterface.dropTable('posts');
   }
 };

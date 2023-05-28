@@ -1,5 +1,5 @@
-import { DataTypes, Model } from 'sequelize'
-import { sequelize } from '../utils/db'
+import { DataTypes, Model } from 'sequelize';
+import { sequelize } from '../utils/db';
 
 class User extends Model {}
 
@@ -15,7 +15,7 @@ User.init({
     unique: true,
     validate: {
       is: {
-        args: ['^[a-z\d]+$', 'i'],
+        args: ['^[a-z0-9]+$', 'i'],
         msg: 'Username must be alphanumeric'
       },
       max: {
@@ -51,6 +51,6 @@ User.init({
   underscored: true,
   timestamps: true,
   modelName: 'user'
-})
+});
 
-export default User
+export default User;

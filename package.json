@@ -6,7 +6,8 @@
   "scripts": {
     "test": "NODE_ENV=test jest --verbose --runInBand",
     "dev": "NODE_ENV=development ts-node-dev ./src/index.ts",
-    "sequelize": "sequelize"
+    "sequelize": "sequelize",
+    "lint": "eslint"
   },
   "repository": {
     "type": "git",
@@ -33,7 +34,10 @@
     "@types/bcrypt": "^5.0.0",
     "@types/express": "^4.17.17",
     "@types/jest": "^29.5.1",
+    "@typescript-eslint/eslint-plugin": "^5.59.7",
+    "@typescript-eslint/parser": "^5.59.7",
     "dotenv": "^16.0.3",
+    "eslint": "^8.41.0",
     "jest": "^29.5.0",
     "nodemon": "^2.0.22",
     "sequelize-cli": "^6.6.0",
