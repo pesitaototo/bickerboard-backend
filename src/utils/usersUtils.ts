@@ -25,6 +25,11 @@ const parsePassword = (password: unknown): string => {
     throw new Error('bad or missing password');
   }
 
+  if(password.length < 8) {
+    throw new Error('password must contain at least 8 characters');
+  }
+
+
   return password;
 };
 
