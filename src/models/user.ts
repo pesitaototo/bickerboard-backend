@@ -19,7 +19,7 @@ User.init({
         msg: 'Username must be alphanumeric'
       },
       max: {
-        args: [20],
+        args: [19],
         msg: 'Username can only be 20 characters'
       },
       min: {
@@ -36,7 +36,7 @@ User.init({
   },
   passwordHash: {
     type: DataTypes.TEXT,
-    allowNull: false,
+    allowNull: false
   },
   isAdmin: {
     type: DataTypes.BOOLEAN,

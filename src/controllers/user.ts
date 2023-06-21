@@ -1,35 +1,33 @@
 import { Post, Topic, User } from '../models';
-import bcrypt from 'bcrypt';
+// import bcrypt from 'bcrypt';
 
 import express from 'express';
-import { toNewUserEntry } from '../utils/utils';
 import userService from '../services/userService';
 const router = express.Router();
 // const router = require('express').Router()
 
-router.get('/', async (req, res) => {
-  const users = await User.findAll({
-    include: [
-      {
-        model: Post
-      },
-      {
-        model: Topic
-      }
-    ]
-  });
+// get all users
+router.get('/', async (_req, res) => {
+  const users = userService.getAllUsers();
   // res.json(users)
   res.json(users);
 });
 
-router.post('/', async (req, res) => {
-  // const password = req.body.password;
-  // const passwordHash = await bcrypt.hash(password, 10)
-  // console.log(passwordHash);
+// get user by id
+router.get('/:id', async (req, res) => {
+  const id = Number(req.params.id);
 
-  const newUserEntry = toNewUserEntry(req.body);
-  const createdUser = await userService.createUser(newUserEntry);
+  const user = userService.getUserById(id);
+
+  return user;
+});
+
+// create user
+router.post('/', async (req, res) => {
+  const createdUser = await userService.createUser(req.body);
   return res.status(201).json(createdUser);
 });
+
+// todo delete user
 
 export default router;
