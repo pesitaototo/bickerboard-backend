@@ -50,9 +50,9 @@ describe('when a user exists', () => {
 });
 
 describe('when a user does not exist', () => {
-  test('we can create a user with a post request', async () => {
+  test('we can create a user with a password that is at least 8 characters', async () => {
     const newUser = {
-      handle: 'testpost',
+      handle: 'testuser1',
       email: 'testemail@example.com',
       password: 'talofalava',
     };
@@ -66,9 +66,42 @@ describe('when a user does not exist', () => {
     const response = await api.get('/api/users');
 
     expect(response.body).toHaveLength(1);
-    expect(response.body[0].handle).toContain('testpost');
+    expect(response.body[0].handle).toContain('testuser1');
     expect(response.body[0].email).toContain('testemail@example.com');
   });
+
+  test('we can NOT create a user with password less than 8 characters', async () => {
+    const newUser = {
+      handle: 'testuser2',
+      email: 'testemail@example.com',
+      password: 'hello',
+    };
+
+    const result = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/);
+
+    expect(result.body.error).toContain('password must contain at least 8 characters');
+  });
+
+  test('we can NOT create a user with username more than 20 characters', async () => {
+    const newUser = {
+      handle: 'abcdefghijklmnopqrstuvwxyz',
+      email: 'testemail@example.com',
+      password: 'thisismypassword',
+    };
+
+    const result = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/);
+
+    expect(result.body.error).toContain('Username can only be 20 characters');
+  });
+
 });
 
 afterAll( async() => {
