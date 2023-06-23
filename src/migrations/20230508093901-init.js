@@ -13,7 +13,7 @@ module.exports = {
         autoIncrement: true
       },
       handle: {
-        type: DataTypes.STRING(20),
+        type: DataTypes.STRING(200),
         allowNull: false,
         unique: true,
         validate: {
@@ -22,11 +22,11 @@ module.exports = {
             msg: 'Username must be alphanumeric'
           },
           max: {
-            args: [20],
+            args: 20,
             msg: 'Username can only be 20 characters'
           },
           min: {
-            args: [4],
+            args: 4,
             msg: 'Username must be at least 4 characters'
           }
         }
@@ -64,6 +64,14 @@ module.exports = {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
+      },
+      title: {
+        type: DataTypes.STRING(100),
+        allowNull: false
+      },
+      body: {
+        type: DataTypes.TEXT,
+        allowNull: false,
       },
       created_at: {
         type: DataTypes.DATE,
