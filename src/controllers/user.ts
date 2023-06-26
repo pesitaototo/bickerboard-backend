@@ -8,7 +8,7 @@ const router = express.Router();
 
 // get all users
 router.get('/', async (_req, res) => {
-  const users = userService.getAllUsers();
+  const users = await userService.getAllUsers();
   // res.json(users)
   res.json(users);
 });
@@ -17,17 +17,22 @@ router.get('/', async (_req, res) => {
 router.get('/:id', async (req, res) => {
   const id = Number(req.params.id);
 
-  const user = userService.getUserById(id);
+  const user = await userService.getUserById(id);
 
-  return user;
+  res.json(user);
 });
 
 // create user
 router.post('/', async (req, res) => {
   const createdUser = await userService.createUser(req.body);
-  return res.status(201).json(createdUser);
+  res.status(201).json(createdUser);
 });
 
 // todo delete user
+// router.delete('/:id', async (req, res) => {
+//   const id = Number(req.params.id);
+
+//   await userService.deleteUserById(id);
+// });
 
 export default router;

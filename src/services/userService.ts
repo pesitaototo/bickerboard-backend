@@ -31,6 +31,12 @@ const getUserById = async (id: number) => {
   return user;
 };
 
+const getUserByHandle = async (handle: string) => {
+  const user = await User.findOne({ where: { handle }});
+
+  return user;
+};
+
 const createUser = async (userInfo: any) => {
   try {
     let newUser: NewUserEntry = toNewUserEntry(userInfo);
@@ -49,11 +55,16 @@ const createUser = async (userInfo: any) => {
     }
     throw new Error('something unexpected happened' + err);
   }
-
 };
+
+// todo: implement deleteUserById
+// const deleteUserById = async (id: number) => {
+// };
 
 export default {
   getAllUsers,
   getUserById,
-  createUser
+  getUserByHandle,
+  createUser,
+  // deleteUserById
 };
