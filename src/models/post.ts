@@ -1,5 +1,5 @@
-import { DataTypes, Model } from 'sequelize'
-import { sequelize } from '../utils/db'
+import { DataTypes, Model } from 'sequelize';
+import { sequelize } from '../utils/db';
 
 class Post extends Model {}
 
@@ -14,6 +14,6 @@ Post.init({
   underscored: true,
   timestamps: true,
   modelName: 'post'
-})
+});
 
-export default Post
+export default Post;

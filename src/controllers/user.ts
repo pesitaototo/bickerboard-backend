@@ -1,32 +1,38 @@
-import { Post, Topic, User } from '../models'
+import { Post, Topic, User } from '../models';
+// import bcrypt from 'bcrypt';
 
-import express from 'express'
-const router = express.Router()
+import express from 'express';
+import userService from '../services/userService';
+const router = express.Router();
 // const router = require('express').Router()
 
-router.get('/', async (req, res) => {
-  const users = await User.findAll({
-    include: [
-      {
-        model: Post
-      },
-      {
-        model: Topic
-      }
-    ]
-  })
+// get all users
+router.get('/', async (_req, res) => {
+  const users = await userService.getAllUsers();
   // res.json(users)
-  res.json({hello: 'hello', users: users})
-})
+  res.json(users);
+});
 
+// get user by id
+router.get('/:id', async (req, res) => {
+  const id = Number(req.params.id);
+
+  const user = await userService.getUserById(id);
+
+  res.json(user);
+});
+
+// create user
 router.post('/', async (req, res) => {
-  const { handle: string, email: string, password: string } = req.body
+  const createdUser = await userService.createUser(req.body);
+  res.status(201).json(createdUser);
+});
 
-  const newUser = {
-    handle,
-    email,
-    password
-  }
-})
+// todo delete user
+// router.delete('/:id', async (req, res) => {
+//   const id = Number(req.params.id);
 
-export default router
+//   await userService.deleteUserById(id);
+// });
+
+export default router;

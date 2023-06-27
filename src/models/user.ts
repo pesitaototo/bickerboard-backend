@@ -1,7 +1,16 @@
-import { DataTypes, Model } from 'sequelize'
-import { sequelize } from '../utils/db'
+import { DataTypes, Model } from 'sequelize';
+import { sequelize } from '../utils/db';
 
-class User extends Model {}
+class User extends Model {
+  public id!: number;
+  public handle!: string;
+  public email!: string;
+  public passwordHash!: string;
+  public isAdmin!: boolean;
+  public isEnabled!: boolean;
+  public readonly createdAt!: Date;
+  public readonly updatedAt!: Date;
+}
 
 User.init({
   id: {
@@ -11,13 +20,15 @@ User.init({
   },
   handle: {
     type: DataTypes.STRING(20),
+    allowNull: false,
+    unique: true,
     validate: {
       is: {
-        args: ['^[a-z\d]+$', 'i'],
+        args: ['^[a-z0-9]+$', 'i'],
         msg: 'Username must be alphanumeric'
       },
       max: {
-        args: [20],
+        args: [19],
         msg: 'Username can only be 20 characters'
       },
       min: {
@@ -34,6 +45,7 @@ User.init({
   },
   passwordHash: {
     type: DataTypes.TEXT,
+    allowNull: false
   },
   isAdmin: {
     type: DataTypes.BOOLEAN,
@@ -48,6 +60,6 @@ User.init({
   underscored: true,
   timestamps: true,
   modelName: 'user'
-})
+});
 
-export default User
+export default User;

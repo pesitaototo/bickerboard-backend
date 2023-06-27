@@ -1,5 +1,5 @@
 import { DataTypes, Model } from 'sequelize';
-import { sequelize } from '../utils/db'
+import { sequelize } from '../utils/db';
 
 class Topic extends Model {}
 
@@ -8,12 +8,20 @@ Topic.init({
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true
+  },
+  title: {
+    type: DataTypes.STRING(100),
+    allowNull: false
+  },
+  body: {
+    type: DataTypes.TEXT,
+    allowNull: false,
   }
 }, {
   sequelize,
   underscored: true,
   timestamps: true,
   modelName: 'topic'
-})
+});
 
-export default Topic
+export default Topic;
