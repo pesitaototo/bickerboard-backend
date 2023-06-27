@@ -14,7 +14,10 @@ const verifyLogin = async (handle: string, password: string) => {
         id: user.id,
         handle: user.handle
       };
-      const token = jwt.sign(dataForToken, SECRET);
+      const token = jwt.sign(dataForToken,
+        SECRET, 
+        { expiresIn: 60*60 } // token expires in 1 hour
+      );
       return token;
     }
   }

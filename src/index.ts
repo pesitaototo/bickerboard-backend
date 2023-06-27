@@ -3,16 +3,16 @@ import 'express-async-errors'; // must be imported before creating any express.R
 import usersRouter from './controllers/user';
 import topicsRouter from './controllers/topic';
 import { connectToDatabase } from './utils/db';
-import { errorHandler } from './utils/middleware';
+import { authorizeToken, errorHandler } from './utils/middleware';
 import loginRouter from './controllers/login';
 
 const app = express();
 app.use(express.json());
 
-
+app.use('/api/login', loginRouter);
+// app.use(authorizeToken);
 app.use('/api/users', usersRouter);
 app.use('/api/topics', topicsRouter);
-app.use('/api/login', loginRouter);
 app.use(errorHandler as ErrorRequestHandler);
 
 const start = async () => {

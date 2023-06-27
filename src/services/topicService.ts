@@ -12,6 +12,16 @@ const getAllTopics = async () => {
   return topics;
 };
 
+const getTopicById = async (id: number) => {
+  const topic = await Topic.findByPk(id);
+
+  if (!topic) {
+    throw new Error('topic id cannot be found');
+  }
+
+  return topic;
+};
+
 const createTopic = async (topicInput: any) => {
   try {
     const newTopic = topicInput;
@@ -25,5 +35,6 @@ const createTopic = async (topicInput: any) => {
 
 export default {
   getAllTopics,
+  getTopicById,
   createTopic
 };
