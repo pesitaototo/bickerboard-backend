@@ -1,8 +1,10 @@
 import { UniqueConstraintError } from 'sequelize';
 import { Post, Topic, User } from '../models';
-import { NewUserEntry, UserEntry } from '../utils/types';
+import { NewUserEntry } from '../utils/types';
 import { toNewUserEntry } from '../utils/usersUtils';
+import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+import { SECRET } from '../utils/config';
 
 const passwordHash = async (plainPassword: string): Promise<string> => {
   const hash = await bcrypt.hash(plainPassword, 10);
@@ -37,6 +39,19 @@ const getUserByHandle = async (handle: string) => {
   return user;
 };
 
+// redeclare jsonwebtoken module that extends Payload
+// from https://stackoverflow.com/a/68641439/19470043
+declare module 'jsonwebtoken' {
+  export interface UserIDJwtPayload extends jwt.JwtPayload {
+    id: string
+  }
+}
+
+const getUserIdByToken = async (token: string) => {
+  const { id } = <jwt.UserIDJwtPayload>jwt.verify(token, SECRET);
+  return id;
+};
+
 const createUser = async (userInfo: any) => {
   try {
     let newUser: NewUserEntry = toNewUserEntry(userInfo);
@@ -65,6 +80,7 @@ export default {
   getAllUsers,
   getUserById,
   getUserByHandle,
+  getUserIdByToken,
   createUser,
   // deleteUserById
 };

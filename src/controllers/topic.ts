@@ -1,7 +1,8 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 const router = express.Router();
 import topicService from '../services/topicService';
 import { authorizeToken } from '../utils/middleware';
+import userService from '../services/userService';
 
 // get all topics
 router.get('/', async (_req, res) => {
@@ -19,12 +20,27 @@ router.get('/:id', async (req, res) => {
   res.json(topic);
 });
 
+// following pattern from https://stackoverflow.com/a/68641439/19470043
+// for extending type from a module
+// declare module 'express' {
+//   export interface Request extends Express.Request {
+//     token?: string;
+//   }
+// }
+
 // create new topic
-router.post('/', authorizeToken, async (req, res) => {
-  if (req.headers.authorization) {
-    console.log(req.headers.authorization.substr(7));
+router.post('/', authorizeToken, async (req: Request, res: Response) => {
+  if (!req.token) {
+    throw new Error('invalid token');
   }
-  const createdTopic = await topicService.createTopic(req.body);
+  const userId = await userService.getUserIdByToken(req.token);
+
+  const newTopic = {
+    ...req.body,
+    userId: userId
+  };
+
+  const createdTopic = await topicService.createTopic(newTopic);
   res.status(201).json(createdTopic);
 });
 

@@ -11,6 +11,14 @@ export const errorHandler = (error: any, req: Request, res: Response, next: Next
 
 };
 
+// following pattern from https://stackoverflow.com/a/68641439/19470043
+// for extending type from a module
+declare module 'express' {
+  export interface Request extends Express.Request {
+    token?: string;
+  }
+}
+
 export const authorizeToken = (req: Request, res: Response, next: NextFunction) => {
   let token = req.headers.authorization;
 
@@ -25,6 +33,7 @@ export const authorizeToken = (req: Request, res: Response, next: NextFunction) 
     const decodedToken = jwt.verify(token, SECRET);
 
     if (decodedToken) {
+      req.token = token;
       return next();
     }
   }
@@ -37,8 +46,7 @@ export const authorizeToken = (req: Request, res: Response, next: NextFunction) 
 //         request.headers.authorization.toLowerCase().includes('Bearer')) {
 //     const token = request.headers.authorization.toLowerCase().substr(7);
 //     if (jwt.verify(token, SECRET)) {
-//       request.headers. = request.headers.authorization.substr(7);
+//       request.token = token;
 //     }
 //   }
-
 // };
