@@ -1,7 +1,14 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '../utils/db';
 
-class Topic extends Model {}
+class Topic extends Model {
+  public id!: number;
+  public title!: string;
+  public body!: string;
+  public userId?: number;
+  public readonly createdAt!: Date;
+  public readonly updatedAt!: Date;
+}
 
 Topic.init({
   id: {
