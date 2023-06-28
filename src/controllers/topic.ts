@@ -20,19 +20,10 @@ router.get('/:id', async (req, res) => {
   res.json(topic);
 });
 
-// following pattern from https://stackoverflow.com/a/68641439/19470043
-// for extending type from a module
-// declare module 'express' {
-//   export interface Request extends Express.Request {
-//     token?: string;
-//   }
-// }
-
 // create new topic
 router.post('/', authorizeToken, async (req: Request, res: Response) => {
-  if (!req.token) {
-    throw new Error('invalid token');
-  }
+  if (!req.token) return;
+
   const userId = await userService.getUserIdByToken(req.token);
 
   const newTopic = {
@@ -41,9 +32,27 @@ router.post('/', authorizeToken, async (req: Request, res: Response) => {
   };
 
   const createdTopic = await topicService.createTopic(newTopic);
-  res.status(201).json(createdTopic);
+  res.status(203).json(createdTopic);
+});
+
+// user should only be able to edit topic body submission
+router.put('/:id', authorizeToken, async (req: Request, res: Response) => {
+  if (!req.token) return;
+  const topicId = Number(req.params.id);
+  const body = req.body.body;
+
+  const updatedTopic = await topicService.editTopicById(topicId, body);
+
+  res.json(updatedTopic);
 });
 
 // delete topic by id
+router.delete('/:id', authorizeToken, async (req: Request, res: Response) => {
+  const topicId = Number(req.params.id);
+
+  await topicService.deleteTopicById(topicId);
+
+  res.status(201).end();
+});
 
 export default router;
