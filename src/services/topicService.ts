@@ -33,8 +33,27 @@ const createTopic = async (topicInput: any) => {
   }
 };
 
+const editTopicById = async (id: number, newBody: string) => {
+  const topicToChange = await getTopicById(id);
+
+  const updatedTopic = await topicToChange.update({
+    body: newBody
+  });
+
+  return updatedTopic;
+};
+
+const deleteTopicById = async (id: number) => {
+  await Topic.destroy({
+    where: { id }
+  });
+
+};
+
 export default {
   getAllTopics,
   getTopicById,
-  createTopic
+  createTopic,
+  editTopicById,
+  deleteTopicById
 };
