@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { SECRET } from './config';
+import userService from '../services/userService';
 
 export const errorHandler = (error: any, req: Request, res: Response, next: NextFunction) => {
   if ('message' in error) {
@@ -19,26 +20,31 @@ declare module 'express' {
   }
 }
 
-export const authorizeToken = (req: Request, res: Response, next: NextFunction) => {
+export const authorizeToken = async (req: Request, res: Response, next: NextFunction) => {
   let token = req.headers.authorization;
 
   if (!token) {
-    return res.status(500).json({ error: 'missing token' });
+    return res.status(403).json({ error: 'missing token' });
   }
 
   if (token.toLowerCase().startsWith('bearer')) {
     token = token.substr(7);
 
     // verify token
-    const decodedToken = jwt.verify(token, SECRET);
+    if (jwt.verify(token, SECRET)) {
+      // verify user is not disabled
+      const user = await userService.getUserById(
+        Number(await userService.getUserIdByToken(token))
+      );
 
-    if (decodedToken) {
-      req.token = token;
-      return next();
+      if (user && user.isEnabled) { 
+        req.token = token;
+        return next();
+      }
     }
   }
 
-  throw new Error('invalid token');
+  return res.status(403).json({ error: 'invalid or unauthorized token' });
 };
 
 // export const extractUserToken = (request: Request, _response: Response) => {
