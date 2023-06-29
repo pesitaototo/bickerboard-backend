@@ -24,11 +24,13 @@ test('users api is reachable', async () => {
 
 describe('when a user exists', () => {
   beforeEach(async () => {
-    await User.create({
-      handle: 'testuser',
-      email: 'test@test.com',
-      passwordHash: 'password',
-    });
+    await api
+      .post('/api/users')
+      .send({
+        handle: 'testuser',
+        email: 'test@test.com',
+        password: 'password',
+      });
   });
 
   test('cannot create a user with the same handle', async () => {
