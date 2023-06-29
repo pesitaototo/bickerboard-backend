@@ -32,7 +32,7 @@ router.post('/', authorizeToken, async (req: Request, res: Response) => {
   };
 
   const createdTopic = await topicService.createTopic(newTopic);
-  res.status(203).json(createdTopic);
+  res.status(200).json(createdTopic);
 });
 
 // user should only be able to edit topic body submission
@@ -43,7 +43,7 @@ router.put('/:id', authorizeToken, async (req: Request, res: Response) => {
 
   const updatedTopic = await topicService.editTopicById(topicId, body);
 
-  res.json(updatedTopic);
+  res.status(200).json(updatedTopic);
 });
 
 // delete topic by id
@@ -52,7 +52,7 @@ router.delete('/:id', authorizeToken, async (req: Request, res: Response) => {
 
   await topicService.deleteTopicById(topicId);
 
-  res.status(201).end();
+  res.status(204).end();
 });
 
 export default router;
