@@ -14,25 +14,31 @@ afterAll(async () => {
 });
 
 describe('when a topic exists and a user does not have a valid token', () => {
-  beforeAll(async () => {
-    await User.create({
-      handle: 'testuser',
-      email: 'test@test.com',
-      passwordHash: 'password',
-    });
+  beforeEach(async () => {
+    await User.sync({ force: true });
+    await Topic.sync({ force: true });
+
+    await api
+      .post('/api/users')
+      .send({
+        handle: 'testuser',
+        email: 'test@test.com',
+        password: 'password',
+      });
+
     await Topic.create({
       title: 'The tale of two cities',
       body: 'Once upon a time...',
       userId: 1
     });
   });
-  
+
   test('can view list of topics', async () => {
     const result = await api
       .get('/api/topics')
       .expect(200)
       .expect('Content-Type', /application\/json/);
-    
+
     expect(result.body[0].title).toContain('The tale of two cities');
     expect(result.body[0].body).toContain('Once upon a time...');
   });
@@ -42,7 +48,7 @@ describe('when a topic exists and a user does not have a valid token', () => {
       .get('/api/topics/1')
       .expect(200)
       .expect('Content-Type', /application\/json/);
-    
+
     expect(result.body.title).toContain('The tale of two cities');
     expect(result.body.body).toContain('Once upon a time...');
   });
@@ -74,11 +80,11 @@ describe('when a topic exists and a user does not have a valid token', () => {
       .delete('/api/topics/1')
       .expect(403)
       .expect('Content-Type', /application\/json/);
-    
+
     const result = await api
       .get('/api/topics')
       .expect('Content-Type', /application\/json/);
-    
+
     expect(result.body).toHaveLength(1);
   });
 
@@ -102,14 +108,78 @@ describe('when a topic exists and a user does not have a valid token', () => {
   });
 });
 
-// describe('when a user has a valid token', () => {
-//   test('can create own topic', async () => {
+describe('when a user has a valid token', () => {
+  // create a user and then get token
+  let token = '';
+  beforeAll(async () => {
+    await User.sync({ force: true });
+    // await Topic.sync({ force: true });
+    const newUser = {
+      handle: 'testuser',
+      email: 'test@test.com',
+      password: 'password'
+    };
 
-//   });
+    await api
+      .post('/api/users')
+      .send(newUser);
 
-//   test('can edit own topic', async () => {
+    const response = await api
+      .post('/api/login')
+      .send({
+        handle: 'testuser',
+        password: 'password'
+      });
+    
+    token = response.body.token;
 
-//   });
+  });
+
+  beforeEach(async () => {
+    // await User.sync({ force: true });
+    await Topic.sync({ force: true });
+  });
+
+
+  test('can create own topic', async () => {
+    await api
+      .post('/api/topics')
+      .send({
+        title: 'Created my own topic',
+        body: 'That is right, I did indeed!'
+      })
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+    
+    const result = await api
+      .get('/api/topics')
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+    
+    expect(result.body).toHaveLength(1);
+    expect(result.body[0].title).toContain('Created my own topic');
+    expect(result.body[0].body).toContain('That is right, I did indeed!');
+    
+  });
+
+  test('can edit own topic body but not title', async () => {
+    await api
+      .post('/api/topics')
+      .send({
+        title: 'Created my own topic',
+        body: 'That is right, I did indeed!'
+      })
+      .set('Authorization', `Bearer ${token}`);
+    
+    await api
+      .put('/api/topics/1')
+      .send({
+        title: 'Cannot change the title',
+        body: 'But can change body, though'
+      })
+      .set('Authorization', `Bearer ${token}`);
+  });
 
 //   test('can delete own topic', async () => {
 
@@ -122,4 +192,4 @@ describe('when a topic exists and a user does not have a valid token', () => {
 //   test('can not edit other user topic', async () => {
 
 //   });
-// })
+});
