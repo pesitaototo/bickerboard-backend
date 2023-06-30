@@ -1,4 +1,5 @@
 import { Topic, User } from '../models';
+import userService from './userService';
 
 const getAllTopics = async () => {
   const topics = await Topic.findAll({
@@ -43,10 +44,18 @@ const editTopicById = async (id: number, newBody: string) => {
   return updatedTopic;
 };
 
-const deleteTopicById = async (id: number) => {
-  await Topic.destroy({
-    where: { id }
-  });
+const deleteTopicById = async (id: number, token: string) => {
+  const userId: number = await userService.getUserIdByToken(token);
+
+  const topicToDelete = await Topic.findByPk(id);
+  if (!topicToDelete || topicToDelete && topicToDelete.userId !== userId) {
+    throw new Error('InsufficientPermission');
+  }
+  
+  await topicToDelete.destroy();
+  // await Topic.destroy({
+  //   where: { id }
+  // });
 
 };
 

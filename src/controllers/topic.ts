@@ -50,7 +50,7 @@ router.put('/:id', authorizeToken, async (req: Request, res: Response) => {
 router.delete('/:id', authorizeToken, async (req: Request, res: Response) => {
   const topicId = Number(req.params.id);
 
-  await topicService.deleteTopicById(topicId);
+  await topicService.deleteTopicById(topicId, req.token);
 
   res.status(204).end();
 });
