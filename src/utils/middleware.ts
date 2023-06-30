@@ -4,8 +4,24 @@ import { SECRET } from './config';
 import userService from '../services/userService';
 
 export const errorHandler = (error: any, req: Request, res: Response, next: NextFunction) => {
-  if ('message' in error) {
-    return res.status(400).send({ error: error.message });
+  // if ('message' in error) {
+  //   return res.status(400).send({ error: error.message });
+  // }
+
+  if (error instanceof Error) {
+    if (error.message === 'InsufficientPermission') {
+      return res.status(403).send({ error: 'permission denied' });
+    }
+
+    if (error.message === 'topic id cannot be found') {
+      return res.status(400).send({ error: error.message });
+    }
+
+    if (error.name === 'JsonWebTokenError') {
+      return res.status(403).send({ error: error.message });
+    }
+
+    // return res.status(400).send({ error: error.message });
   }
 
   res.status(500).send({ error: 'something unexpected happened' });
