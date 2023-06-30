@@ -5,8 +5,28 @@ import { Topic, User } from '../models';
 
 const api = supertest(app);
 
+let token = '';
 beforeAll(async () => {
   await connectToDatabase();
+
+  await User.sync({ force: true });
+
+  await api
+    .post('/api/users')
+    .send({
+      handle: 'testuser',
+      email: 'test@test.com',
+      password: 'password',
+    });
+  
+  const response = await api
+    .post('/api/login')
+    .send({
+      handle: 'testuser',
+      password: 'password'
+    });
+
+  token = response.body.token;
 });
 
 afterAll(async () => {
@@ -15,16 +35,7 @@ afterAll(async () => {
 
 describe('when a topic exists and a user does not have a valid token', () => {
   beforeEach(async () => {
-    await User.sync({ force: true });
     await Topic.sync({ force: true });
-
-    await api
-      .post('/api/users')
-      .send({
-        handle: 'testuser',
-        email: 'test@test.com',
-        password: 'password',
-      });
 
     await Topic.create({
       title: 'The tale of two cities',
@@ -108,38 +119,11 @@ describe('when a topic exists and a user does not have a valid token', () => {
   });
 });
 
-describe('when a user has a valid token', () => {
-  // create a user and then get token
-  let token = '';
-  beforeAll(async () => {
-    await User.sync({ force: true });
-    // await Topic.sync({ force: true });
-    const newUser = {
-      handle: 'testuser',
-      email: 'test@test.com',
-      password: 'password'
-    };
-
-    await api
-      .post('/api/users')
-      .send(newUser);
-
-    const response = await api
-      .post('/api/login')
-      .send({
-        handle: 'testuser',
-        password: 'password'
-      });
-    
-    token = response.body.token;
-
-  });
-
+describe('when user has a valid token', () => {
   beforeEach(async () => {
     // await User.sync({ force: true });
     await Topic.sync({ force: true });
   });
-
 
   test('can create own topic', async () => {
     await api
@@ -151,45 +135,114 @@ describe('when a user has a valid token', () => {
       .set('Authorization', `Bearer ${token}`)
       .expect(200)
       .expect('Content-Type', /application\/json/);
-    
+
     const result = await api
       .get('/api/topics')
       .expect(200)
       .expect('Content-Type', /application\/json/);
-    
+
     expect(result.body).toHaveLength(1);
     expect(result.body[0].title).toContain('Created my own topic');
     expect(result.body[0].body).toContain('That is right, I did indeed!');
-    
+
   });
 
-  test('can edit own topic body but not title', async () => {
-    await api
-      .post('/api/topics')
-      .send({
-        title: 'Created my own topic',
-        body: 'That is right, I did indeed!'
-      })
-      .set('Authorization', `Bearer ${token}`);
-    
-    await api
-      .put('/api/topics/1')
-      .send({
-        title: 'Cannot change the title',
-        body: 'But can change body, though'
-      })
-      .set('Authorization', `Bearer ${token}`);
+  describe('when user has an existing topic', () => {
+    beforeEach(async () => {
+      await Topic.sync({ force: true });
+      await api
+        .post('/api/topics')
+        .send({
+          title: 'Created my own topic',
+          body: 'That is right, I did indeed!'
+        })
+        .set('Authorization', `Bearer ${token}`);
+    });
+
+    test('user can edit own topic body but not title', async () => {
+      await api
+        .put('/api/topics/1')
+        .send({
+          title: 'Cannot change the title',
+          body: 'But can change body, though'
+        })
+        .set('Authorization', `Bearer ${token}`);
+      const result = await api
+        .get('/api/topics/1')
+        .expect(200)
+        .expect('Content-Type', /application\/json/);
+      expect(result.body.title).toContain('Created my own topic');
+      expect(result.body.body).toContain('But can change body, though');
+    });
+
+    test('user can delete own topic', async () => {
+      await api
+        .delete('/api/topics/1')
+        .set('Authorization', `Bearer ${token}`)
+        .expect(204);
+      const result = await api
+        .get('/api/topics/1')
+        .expect(400)
+        .expect('Content-Type', /application\/json/);
+      expect(result.body.title).toBeUndefined();
+      // expect(result.body.error).toContain('topic id cannot be found');
+      const listOfTopics = await api
+        .get('/api/topics')
+        .expect(200)
+        .expect('Content-Type', /application\/json/);
+      expect(listOfTopics.body).toHaveLength(0);
+    });
+
+    describe('other users', () => {
+      let anotherToken = '';
+      beforeEach(async () => {
+        await api
+          .post('/api/users')
+          .send({
+            handle: 'anotheruser',
+            email: 'anotheruser@example.com',
+            password: 'anotherpassword'
+          });
+        const response = await api
+          .post('/api/login')
+          .send({
+            handle: 'anotheruser',
+            password: 'anotherpassword'
+          });
+        anotherToken = response.body.token;
+      });
+
+      test ('cannot delete user\'s topic', async () => {
+        const result = await api
+          .delete('/api/topics/1')
+          .set('Authorization', `Bearer ${anotherToken}`)
+          .expect(403)
+          .expect('Content-Type', /application\/json/);
+        expect(result.body.error).toContain('permission denied');
+        const topics = await api
+          .get('/api/topics')
+          .expect(200)
+          .expect('Content-Type', /application\/json/);
+        expect(topics.body).toHaveLength(1);
+        expect(topics.body[0].title).toContain('Created my own topic');
+      });
+
+      test('cannot edit user\'s topic', async () => {
+        const result = await api
+          .put('/api/topics/1')
+          .send({
+            body: 'Totally new body'
+          })
+          .set('Authorization', `Bearer ${anotherToken}`)
+          .expect(403)
+          .expect('Content-Type', /application\/json/);
+        expect(result.body.error).toContain('permission denied');
+        const topics = await api
+          .get('/api/topics/1')
+          .expect(200)
+          .expect('Content-Type', /application\/json/);
+        expect(topics.body.body).not.toContain('Totally new body');
+      });
+    });
   });
-
-//   test('can delete own topic', async () => {
-
-//   });
-
-//   test ('can not delete other user topic', async () => {
-
-//   });
-
-//   test('can not edit other user topic', async () => {
-
-//   });
 });
