@@ -41,13 +41,14 @@ router.put('/:id', authorizeToken, async (req: Request, res: Response) => {
   const topicId = Number(req.params.id);
   const body = req.body.body;
 
-  const updatedTopic = await topicService.editTopicById(topicId, body);
+  const updatedTopic = await topicService.editTopicById(topicId, body, req.token);
 
   res.status(200).json(updatedTopic);
 });
 
 // delete topic by id
 router.delete('/:id', authorizeToken, async (req: Request, res: Response) => {
+  if (!req.token) return;
   const topicId = Number(req.params.id);
 
   await topicService.deleteTopicById(topicId, req.token);
