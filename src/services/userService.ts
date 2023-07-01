@@ -79,6 +79,13 @@ const deleteUserById = async (id: number, token: string) => {
   if (id !== userId) {
     throw new Error('permission denied');
   }
+
+  // https://github.com/sequelize/sequelize/issues/8444#issuecomment-811744952
+  // using await User.destroy({ where: { id }}) does not seem to be triggering cascade deletion
+  const user = await User.findByPk(id);
+  if (user) {
+    await user.destroy();
+  }
 };
 
 export default {
