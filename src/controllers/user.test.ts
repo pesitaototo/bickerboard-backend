@@ -15,15 +15,10 @@ afterEach(async () => {
   await rollbackMigration();
 });
 
-test('users api is reachable', async () => {
-  await api
-    .get('/api/users')
-    .expect(200)
-    .expect('Content-Type', /application\/json/);
-});
-
 describe('when a user exists', () => {
+  let token = '';
   beforeEach(async () => {
+    await User.sync({ force: true });
     await api
       .post('/api/users')
       .send({
@@ -31,6 +26,13 @@ describe('when a user exists', () => {
         email: 'test@test.com',
         password: 'password',
       });
+    const response = await api
+      .post('/api/login')
+      .send({
+        handle: 'testuser',
+        password: 'password'
+      });
+    token = response.body.token;
   });
 
   test('cannot create a user with the same handle', async () => {
@@ -48,6 +50,77 @@ describe('when a user exists', () => {
 
     expect(result.body.error).toContain('handle must be unique');
 
+  });
+
+  test('user can own delete account', async () => {
+    await api
+      .delete('/api/users/1')
+      .set('Authorization', `Bearer ${token}`)
+      .expect(204);
+    const users = await api
+      .get('/api/users')
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+    expect(users.body).toHaveLength(0);
+  });
+
+  test('other user cannot delete user', async () => {
+    // create another user
+    await api
+      .post('/api/users')
+      .send({
+        handle: 'newuser',
+        email: 'test2@test.com',
+        password: 'newuserpass123',
+      })
+      .expect(201);
+    // generate token for new user
+    let user2Token = '';
+    const response = await api
+      .post('/api/login')
+      .send({
+        handle: 'newuser',
+        password: 'newuserpass123'
+      })
+      .expect(200);
+    user2Token = response.body.token;
+    // send delete request for another user
+    await api
+      .delete('/api/users/1')
+      .set('Authorization', `Bearer ${user2Token}`)
+      .expect(403)
+      .expect('Content-Type', /application\/json/);
+    const users = await api
+      .get('/api/users')
+      .expect(200);
+    expect(users.body).toHaveLength(2);
+    expect(users.body[1].handle).toContain('testuser');
+  });
+
+  test('when user is deleted, all topics by user is also deleted', async () => {
+    // create some topics
+    await api
+      .post('/api/topics')
+      .send({
+        title: 'Le tolotolo i matautu',
+        body: 'Ma le penisula i mulinuu'
+      })
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200);
+    const topicsBeforeDelete = await api.get('/api/topics');
+    expect(topicsBeforeDelete.body).toHaveLength(1);
+    expect(topicsBeforeDelete.body[0].title).toContain('Le tolotolo i matautu');
+    // delete user
+    await api
+      .delete('/api/users/1')
+      .set('Authorization', `Bearer ${token}`)
+      .expect(204);
+
+    const users = await api.get('/api/users');
+    expect(users.body).toHaveLength(0);
+
+    const topicsAfterDelete = await api.get('/api/topics');
+    expect(topicsAfterDelete.body).toHaveLength(0);
   });
 });
 
