@@ -49,7 +49,7 @@ declare module 'jsonwebtoken' {
 
 const getUserIdByToken = async (token: string) => {
   const { id } = <jwt.UserIDJwtPayload>jwt.verify(token, SECRET);
-  return id;
+  return Number(id);
 };
 
 const createUser = async (userInfo: any) => {
@@ -72,9 +72,14 @@ const createUser = async (userInfo: any) => {
   }
 };
 
-// todo: implement deleteUserById
-// const deleteUserById = async (id: number) => {
-// };
+// todo: verify by user email before deleting user
+const deleteUserById = async (id: number, token: string) => {
+  const userId = await getUserIdByToken(token);
+
+  if (id !== userId) {
+    throw new Error('permission denied');
+  }
+};
 
 export default {
   getAllUsers,
@@ -82,5 +87,5 @@ export default {
   getUserByHandle,
   getUserIdByToken,
   createUser,
-  // deleteUserById
+  deleteUserById
 };

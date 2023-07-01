@@ -1,8 +1,6 @@
-import { Post, Topic, User } from '../models';
-// import bcrypt from 'bcrypt';
-
-import express from 'express';
+import express, { Request, Response } from 'express';
 import userService from '../services/userService';
+import { authorizeToken } from '../utils/middleware';
 const router = express.Router();
 // const router = require('express').Router()
 
@@ -23,16 +21,20 @@ router.get('/:id', async (req, res) => {
 });
 
 // create user
+// todo: send email verification to user email before enabling their account
+// captcha protect endpoint to prevent abuse
 router.post('/', async (req, res) => {
   const createdUser = await userService.createUser(req.body);
   res.status(201).json(createdUser);
 });
 
-// todo delete user
-// router.delete('/:id', async (req, res) => {
-//   const id = Number(req.params.id);
+router.delete('/:id', authorizeToken, async (req: Request, res: Response) => {
+  if (!req.token) return;
+  const id = Number(req.params.id);
 
-//   await userService.deleteUserById(id);
-// });
+  await userService.deleteUserById(id, req.token);
+
+  res.status(204).end();
+});
 
 export default router;
