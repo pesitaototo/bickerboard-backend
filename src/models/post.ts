@@ -8,6 +8,10 @@ Post.init({
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true
+  },
+  body: {
+    type: DataTypes.TEXT,
+    allowNull: false,
   }
 }, {
   sequelize,
