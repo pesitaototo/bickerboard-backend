@@ -9,7 +9,8 @@ export const errorHandler = (error: any, req: Request, res: Response, next: Next
   // }
 
   if (error instanceof Error) {
-    if (error.message === 'InsufficientPermission') {
+    if (error.message === 'InsufficientPermission' ||
+        error.message === 'permission denied') {
       return res.status(403).send({ error: 'permission denied' });
     }
 
@@ -19,6 +20,10 @@ export const errorHandler = (error: any, req: Request, res: Response, next: Next
 
     if (error.name === 'JsonWebTokenError') {
       return res.status(403).send({ error: error.message });
+    }
+
+    if (error.name === 'Error') {
+      return res.status(400).send({ error: error.message });
     }
 
     // return res.status(400).send({ error: error.message });
