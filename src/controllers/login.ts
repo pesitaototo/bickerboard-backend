@@ -6,13 +6,14 @@ const router = express.Router();
 // login user
 router.post('/', async (req, res) => {
   const { handle, password } = req.body;
-  
-  console.log(req.body);
-  console.log(handle);
 
   const token = await loginService.verifyLogin(handle, password);
 
-  res.send({ token });
+  if (!token) {
+    return res.status(401).json({ error: 'incorrect username or password' });
+  }
+
+  res.status(200).send({ token });
 
 });
 
