@@ -1,7 +1,13 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '../utils/db';
 
-class Post extends Model {}
+class Post extends Model {
+  public id!: number;
+  public body!: string;
+  public userId?: number;
+  public readonly createdAt!: Date;
+  public readonly updatedAt!: Date;
+}
 
 Post.init({
   id: {
