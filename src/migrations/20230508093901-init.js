@@ -88,6 +88,10 @@ module.exports = {
         primaryKey: true,
         autoIncrement: true
       },
+      body: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+      },
       created_at: {
         type: DataTypes.DATE,
         defaultValue: new Date()
@@ -97,21 +101,32 @@ module.exports = {
         defaultValue: new Date()
       }
     });
-    await queryInterface.addColumn('posts', 'user_id', {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: { model: 'users', key: 'id' }
-    });
-    await queryInterface.addColumn('posts', 'topic_id', {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: { model: 'topics', key: 'id' }
-    });
-    await queryInterface.addColumn('topics', 'user_id', {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: { model: 'users', key: 'id' }
-    });
+    await queryInterface.addColumn(
+      'posts', // source model
+      'user_id', // name of key being added
+      {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: { model: 'users', key: 'id' },
+        onDelete: 'CASCADE',
+      });
+    await queryInterface.addColumn(
+      'posts',
+      'topic_id',
+      {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: { model: 'topics', key: 'id' }
+      });
+    await queryInterface.addColumn(
+      'topics',
+      'user_id',
+      {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: { model: 'users', key: 'id' },
+        onDelete: 'CASCADE',
+      });
   },
 
   async down ({ context: queryInterface }) {
