@@ -21,8 +21,8 @@ const verifyLogin = async (handle: string, password: string) => {
       return token;
     }
   }
-  
-  throw new Error('invalid handle or password');
+
+  return null;
 };
 
 export default {
