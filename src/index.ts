@@ -1,6 +1,7 @@
 import express, { ErrorRequestHandler } from 'express';
 import 'express-async-errors'; // must be imported before creating any express.Router objects
 import usersRouter from './controllers/user';
+import postsRouter from './controllers/post';
 import topicsRouter from './controllers/topic';
 import { connectToDatabase } from './utils/db';
 import { authorizeToken, errorHandler } from './utils/middleware';
@@ -12,6 +13,7 @@ app.use(express.json());
 app.use('/api/login', loginRouter);
 // app.use(authorizeToken);
 app.use('/api/users', usersRouter);
+app.use('/api/posts', postsRouter);
 app.use('/api/topics', topicsRouter);
 app.use(errorHandler as ErrorRequestHandler);
 
