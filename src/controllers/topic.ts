@@ -3,6 +3,7 @@ const router = express.Router();
 import topicService from '../services/topicService';
 import { authorizeToken } from '../utils/middleware';
 import userService from '../services/userService';
+import postService from '../services/postService';
 
 // get all topics
 router.get('/', async (_req, res) => {
@@ -33,6 +34,23 @@ router.post('/', authorizeToken, async (req: Request, res: Response) => {
 
   const createdTopic = await topicService.createTopic(newTopic);
   res.status(200).json(createdTopic);
+});
+
+// create new post for topic by id
+router.post('/:topicId/new', authorizeToken, async (req: Request, res: Response) => {
+  if (!req.token) return;
+  const topicId = Number(req.params.topicId);
+
+  const userId = await userService.getUserIdByToken(req.token);
+
+  const newPost = {
+    ...req.body,
+    topicId,
+    userId
+  };
+
+  const createdPost = await postService.createPost(newPost, topicId);
+  res.status(200).json(createdPost);
 });
 
 // user should only be able to edit topic body submission

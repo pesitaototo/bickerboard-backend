@@ -20,21 +20,6 @@ router.get('/:id', async (req, res) => {
   res.json(post);
 });
 
-// create new post
-router.post('/', authorizeToken, async (req: Request, res: Response) => {
-  if (!req.token) return;
-
-  const userId = await userService.getUserIdByToken(req.token);
-
-  const newPost = {
-    ...req.body,
-    userId: userId
-  };
-
-  const createdPost = await postService.createPost(newPost);
-  res.status(200).json(createdPost);
-});
-
 // user should only be able to edit post body
 router.put('/:id', authorizeToken, async (req: Request, res: Response) => {
   if (!req.token) return;
