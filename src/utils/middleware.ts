@@ -14,8 +14,16 @@ export const errorHandler = (error: any, req: Request, res: Response, next: Next
       return res.status(403).send({ error: 'permission denied' });
     }
 
-    if (error.message === 'topic id cannot be found') {
-      return res.status(400).send({ error: error.message });
+    if (error.message === 'post not found') {
+      return res.status(404).send({ error: error.message });
+    }
+
+    if (error.message === 'topic not found') {
+      return res.status(404).send({ error: error.message });
+    }
+
+    if (error.message === 'user not found') {
+      return res.status(404).send({ error: error.message });
     }
 
     if (error.name === 'JsonWebTokenError') {
