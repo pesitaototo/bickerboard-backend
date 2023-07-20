@@ -23,12 +23,19 @@ const getAllUsers = async () => {
       }
     ]
   });
+  if (users.length === 0) {
+    return {'users': []};
+  }
 
   return users;
 };
 
 const getUserById = async (id: number) => {
   const user = await User.findByPk(id);
+
+  if (!user) {
+    throw new Error('user not found');
+  }
 
   return user;
 };

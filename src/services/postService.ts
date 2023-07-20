@@ -10,6 +10,10 @@ const getAllPosts = async () => {
     ]
   });
 
+  if (posts.length === 0) {
+    return {'posts': []};
+  }
+
   return posts;
 };
 
@@ -17,7 +21,7 @@ const getPostById = async (id: number) => {
   const post = await Post.findByPk(id);
 
   if (!post) {
-    throw new Error('post id cannot be found');
+    throw new Error('post not found');
   }
 
   return post;

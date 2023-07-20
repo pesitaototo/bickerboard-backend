@@ -10,6 +10,10 @@ const getAllTopics = async () => {
     ]
   });
 
+  if (topics.length === 0) {
+    return {'topics': []};
+  }
+
   return topics;
 };
 
@@ -17,7 +21,7 @@ const getTopicById = async (id: number) => {
   const topic = await Topic.findByPk(id);
 
   if (!topic) {
-    throw new Error('topic id cannot be found');
+    throw new Error('topic not found');
   }
 
   return topic;
