@@ -12,7 +12,7 @@ module.exports = {
         primaryKey: true,
         autoIncrement: true
       },
-      handle: {
+      username: {
         type: DataTypes.STRING(200),
         allowNull: false,
         unique: true,

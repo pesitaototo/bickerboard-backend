@@ -1,7 +1,7 @@
 
 interface BaseUserEntry {
   id: number;
-  handle: string;
+  username: string;
   email: string;
   passwordHash: string;
 }

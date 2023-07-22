@@ -5,9 +5,9 @@ const router = express.Router();
 
 // login user
 router.post('/', async (req, res) => {
-  const { handle, password } = req.body;
+  const { username, password } = req.body;
 
-  const token = await loginService.verifyLogin(handle, password);
+  const token = await loginService.verifyLogin(username, password);
 
   if (!token) {
     return res.status(401).json({ error: 'incorrect username or password' });

@@ -40,8 +40,8 @@ const getUserById = async (id: number) => {
   return user;
 };
 
-const getUserByHandle = async (handle: string) => {
-  const user = await User.findOne({ where: { handle }});
+const getUserByHandle = async (username: string) => {
+  const user = await User.findOne({ where: { username }});
 
   return user;
 };

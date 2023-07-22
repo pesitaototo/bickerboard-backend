@@ -3,7 +3,7 @@ import { sequelize } from '../utils/db';
 
 class User extends Model {
   public id!: number;
-  public handle!: string;
+  public username!: string;
   public email!: string;
   public passwordHash!: string;
   public isAdmin!: boolean;
@@ -18,7 +18,7 @@ User.init({
     primaryKey: true,
     autoIncrement: true
   },
-  handle: {
+  username: {
     type: DataTypes.STRING(20),
     allowNull: false,
     unique: true,
