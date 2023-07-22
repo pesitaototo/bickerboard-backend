@@ -6,9 +6,11 @@ import topicsRouter from './controllers/topic';
 import { connectToDatabase } from './utils/db';
 import { authorizeToken, errorHandler } from './utils/middleware';
 import loginRouter from './controllers/login';
+import cors from 'cors';
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 app.use('/api/login', loginRouter);
 // app.use(authorizeToken);
