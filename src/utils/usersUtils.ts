@@ -42,7 +42,7 @@ export const toNewUserEntry = (object: unknown): NewUserEntry => {
     const newUser: NewUserEntry = {
       username: parseHandle(object.username),
       email: parseEmail(object.email),
-      passwordHash: parsePassword(object.password)
+      password: parsePassword(object.password)
     };
 
     return newUser;

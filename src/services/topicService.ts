@@ -1,4 +1,5 @@
 import { Topic, User } from '../models';
+import { NewTopicEntry } from '../utils/types';
 import userService from './userService';
 
 const getAllTopics = async () => {
@@ -27,11 +28,9 @@ const getTopicById = async (id: number) => {
   return topic;
 };
 
-const createTopic = async (topicInput: any) => {
+const createTopic = async (topicInput: NewTopicEntry) => {
   try {
-    const newTopic = topicInput;
-
-    const createdTopic = await Topic.create(newTopic);
+    const createdTopic = await Topic.create(topicInput);
     return createdTopic;
   } catch (err) {
     throw new Error(`error creating topic ${err}`);

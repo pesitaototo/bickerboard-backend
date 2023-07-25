@@ -28,8 +28,9 @@ router.post('/', authorizeToken, async (req: Request, res: Response) => {
   const userId = await userService.getUserIdByToken(req.token);
 
   const newTopic = {
-    ...req.body,
-    userId: userId
+    title: req.body.title,
+    body: req.body.body,
+    userId
   };
 
   const createdTopic = await topicService.createTopic(newTopic);

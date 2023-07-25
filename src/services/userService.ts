@@ -63,10 +63,10 @@ const createUser = async (userInfo: any) => {
   try {
     let newUser: NewUserEntry = toNewUserEntry(userInfo);
 
-    const hash = await passwordHash(newUser.passwordHash);
+    const hash = await passwordHash(newUser.password);
     newUser = {
       ...newUser,
-      passwordHash: hash 
+      password: hash 
     };
 
     const createdUser = await User.create(newUser);

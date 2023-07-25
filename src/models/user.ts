@@ -5,7 +5,7 @@ class User extends Model {
   public id!: number;
   public username!: string;
   public email!: string;
-  public passwordHash!: string;
+  public password!: string;
   public isAdmin!: boolean;
   public isEnabled!: boolean;
   public readonly createdAt!: Date;
@@ -43,7 +43,7 @@ User.init({
       isEmail: true
     }
   },
-  passwordHash: {
+  password: {
     type: DataTypes.TEXT,
     allowNull: false
   },

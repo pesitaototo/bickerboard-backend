@@ -9,7 +9,7 @@ const verifyLogin = async (username: string, password: string) => {
 
   if (user) {
   // if username and password is correct, generate token
-    if (await bcrypt.compare(password, user.passwordHash)) {
+    if (await bcrypt.compare(password, user.password)) {
       const dataForToken = {
         id: user.id,
         username: user.username
