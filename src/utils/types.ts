@@ -6,7 +6,9 @@ interface BaseUserEntry {
   password: string;
 }
 
-export type UserEntryNoPassword = Omit<BaseUserEntry, 'password'>
+export interface UserEntryNoPassword extends Omit<BaseUserEntry, 'password'> {
+  isEnabled: boolean;
+}
 
 export type NewUserEntry = Omit<BaseUserEntry, 'id'>
 

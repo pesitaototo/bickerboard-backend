@@ -5,7 +5,7 @@ import { SECRET } from '../utils/config';
 
 // verify login, if verified, return token
 const verifyLogin = async (username: string, password: string) => {
-  const user = await userService.getUserByHandle(username);
+  const user = await userService.getUserByHandleWithPassword(username);
 
   if (user) {
   // if username and password is correct, generate token

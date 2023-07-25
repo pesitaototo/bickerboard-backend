@@ -1,6 +1,6 @@
 import { UniqueConstraintError } from 'sequelize';
 import { Post, Topic, User } from '../models';
-import { NewUserEntry } from '../utils/types';
+import { NewUserEntry, UserEntryNoPassword } from '../utils/types';
 import { toNewUserEntry } from '../utils/usersUtils';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
@@ -12,8 +12,9 @@ const passwordHash = async (plainPassword: string): Promise<string> => {
   return hash;
 };
 
-const getAllUsers = async () => {
-  const users = await User.findAll({
+const getAllUsers = async ():
+    Promise<UserEntryNoPassword[] | { 'users' : string[] }> => {
+  const users: UserEntryNoPassword[] = await User.findAll({
     include: [
       {
         model: Post
@@ -24,14 +25,14 @@ const getAllUsers = async () => {
     ]
   });
   if (users.length === 0) {
-    return {'users': []};
+    return {'users': [] as string[]};
   }
 
   return users;
 };
 
-const getUserById = async (id: number) => {
-  const user = await User.findByPk(id);
+const getUserById = async (id: number): Promise<UserEntryNoPassword> => {
+  const user: UserEntryNoPassword | null = await User.findByPk(id);
 
   if (!user) {
     throw new Error('user not found');
@@ -40,8 +41,8 @@ const getUserById = async (id: number) => {
   return user;
 };
 
-const getUserByHandle = async (username: string) => {
-  const user = await User.findOne({ where: { username }});
+const getUserByHandleWithPassword = async (username: string) => {
+  const user = await User.scope('withPassword').findOne({ where: { username }});
 
   return user;
 };
@@ -98,7 +99,7 @@ const deleteUserById = async (id: number, token: string) => {
 export default {
   getAllUsers,
   getUserById,
-  getUserByHandle,
+  getUserByHandleWithPassword,
   getUserIdByToken,
   createUser,
   deleteUserById
