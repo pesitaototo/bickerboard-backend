@@ -1,4 +1,4 @@
-import { Topic, User } from '../models';
+import { Post, Topic, User } from '../models';
 import { NewTopicEntry } from '../utils/types';
 import userService from './userService';
 
@@ -19,7 +19,17 @@ const getAllTopics = async () => {
 };
 
 const getTopicById = async (id: number) => {
-  const topic = await Topic.findByPk(id);
+  const topic = await Topic.findByPk(id,
+    {
+      include: [
+        {
+          model: Post
+        },
+        {
+          model: User
+        }
+      ]
+    });
 
   if (!topic) {
     throw new Error('topic not found');

@@ -32,7 +32,17 @@ const getAllUsers = async ():
 };
 
 const getUserById = async (id: number): Promise<UserEntryNoPassword> => {
-  const user: UserEntryNoPassword | null = await User.findByPk(id);
+  const user: UserEntryNoPassword | null = await User.findByPk(id, 
+    {
+      include: [
+        {
+          model: Post
+        },
+        {
+          model: Topic
+        }
+      ]
+    });
 
   if (!user) {
     throw new Error('user not found');
