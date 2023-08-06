@@ -1,4 +1,6 @@
 import { Post, User } from '../models';
+import { toNewPostEntry } from '../utils/postsUtils';
+import { NewPostEntry } from '../utils/types';
 import userService from './userService';
 
 const getAllPosts = async () => {
@@ -27,11 +29,11 @@ const getPostById = async (id: number) => {
   return post;
 };
 
-const createPost = async(postData: any, topicId: number) => {
+const createPost = async(postInput: any) => {
   try {
-    const newPost = postData;
+    const newPost: NewPostEntry = toNewPostEntry(postInput);
 
-    const createdPost = await Post.create(newPost);
+    const createdPost: Post = await Post.create(newPost);
     return createdPost;
   } catch (err) {
     throw new Error(`error creating post ${err}`);

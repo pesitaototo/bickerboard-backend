@@ -3,6 +3,7 @@ import userService from '../services/userService';
 import { NewTopicEntry, NewUserEntry } from '../utils/types';
 import { Topic } from '../models';
 import topicService from '../services/topicService';
+import postService from '../services/postService';
 dotenv.config();
 
 const populateUser = async () => {
@@ -31,6 +32,15 @@ const populateTopic = async () => {
   await topicService.createTopic(newTopic2);
 };
 
+const populatePost = async () => {
+  const newPost1 = {
+    body: 'test body for first topic',
+    userId: 1,
+    topicId: 1
+  };
+
+  await postService.createPost(newPost1);
+};
 
 
 // bootstrap development environment with data
@@ -38,6 +48,7 @@ const bootstrap = async() => {
   if (process.env.NODE_ENV === 'development') {
     await populateUser();
     await populateTopic();
+    await populatePost();
   }
 };
 

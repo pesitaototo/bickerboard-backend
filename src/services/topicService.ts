@@ -1,4 +1,5 @@
 import { Post, Topic, User } from '../models';
+import { toNewTopicEntry } from '../utils/topicsUtils';
 import { NewTopicEntry } from '../utils/types';
 import userService from './userService';
 
@@ -23,7 +24,8 @@ const getTopicById = async (id: number) => {
     {
       include: [
         {
-          model: Post
+          model: Post,
+          include: [User]
         },
         {
           model: User
@@ -38,9 +40,11 @@ const getTopicById = async (id: number) => {
   return topic;
 };
 
-const createTopic = async (topicInput: NewTopicEntry) => {
+const createTopic = async (topicInput: any) => {
   try {
-    const createdTopic = await Topic.create(topicInput);
+    const newTopic: NewTopicEntry = toNewTopicEntry(topicInput);
+
+    const createdTopic: Topic = await Topic.create(newTopic);
     return createdTopic;
   } catch (err) {
     throw new Error(`error creating topic ${err}`);
@@ -54,7 +58,7 @@ const getTopicIfUserIsOwner = async (topicId: number, token: string) => {
 
   const topic = await Topic.findByPk(topicId);
   if (!topic || topic.userId !== userId) {
-    throw new Error('InsufficientPermission');
+    throw new Error('insufficient permission');
   }
 
   return topic;

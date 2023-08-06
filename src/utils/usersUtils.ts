@@ -1,8 +1,5 @@
 import { NewUserEntry } from './types';
-
-const isString = (text: unknown): text is string => {
-  return typeof text === 'string' || text instanceof String;
-};
+import { isString } from './utilsCommon';
 
 const parseHandle = (username: unknown): string => {
   if (!isString(username)) {

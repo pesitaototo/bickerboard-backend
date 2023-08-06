@@ -20,3 +20,12 @@ interface BaseTopicEntry {
 }
 
 export type NewTopicEntry = Omit<BaseTopicEntry, 'id'>
+
+interface BasePostEntry {
+  id: number;
+  body: string;
+  userId: number;
+  topicId: number;
+}
+
+export type NewPostEntry = Omit<BasePostEntry, 'id'>
