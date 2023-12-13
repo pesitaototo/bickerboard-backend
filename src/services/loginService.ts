@@ -4,15 +4,15 @@ import userService from './userService';
 import { SECRET } from '../utils/config';
 
 // verify login, if verified, return token
-const verifyLogin = async (handle: string, password: string) => {
-  const user = await userService.getUserByHandle(handle);
+const verifyLogin = async (username: string, password: string) => {
+  const user = await userService.getUserByHandleWithPassword(username);
 
   if (user) {
   // if username and password is correct, generate token
-    if (await bcrypt.compare(password, user.passwordHash)) {
+    if (await bcrypt.compare(password, user.password)) {
       const dataForToken = {
         id: user.id,
-        handle: user.handle
+        username: user.username
       };
       const token = jwt.sign(dataForToken,
         SECRET, 
@@ -21,8 +21,8 @@ const verifyLogin = async (handle: string, password: string) => {
       return token;
     }
   }
-  
-  throw new Error('invalid handle or password');
+
+  return null;
 };
 
 export default {

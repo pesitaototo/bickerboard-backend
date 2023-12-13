@@ -2,6 +2,7 @@ import { Sequelize } from 'sequelize';
 import { SequelizeStorage, Umzug } from 'umzug';
 
 import { DATABASE_URL } from './config';
+import bootstrap from '../config/bootstrap';
 
 // console.log("DATABASE_URL: ", DATABASE_URL);
 if (!DATABASE_URL) {
@@ -13,9 +14,12 @@ const sequelize = new Sequelize(DATABASE_URL);
 const connectToDatabase = async () => {
   try {
     await sequelize.authenticate();
-    // if (process.env.NODE_ENV === 'test') {
-    await runMigrations();
-    // }
+    if (process.env.NODE_ENV === 'development') {
+      await sequelize.sync({ force: true });
+      await bootstrap();
+    } else {
+      await runMigrations();
+    }
     console.log(`Connected to database at ${DATABASE_URL}`);
   } catch (err) {
     // console.log('FAILED to connect to Database.... ', err);

@@ -1,12 +1,13 @@
 import express, { Request, Response } from 'express';
 import userService from '../services/userService';
 import { authorizeToken } from '../utils/middleware';
+import { UserEntryNoPassword } from '../utils/types';
 const router = express.Router();
 // const router = require('express').Router()
 
 // get all users
 router.get('/', async (_req, res) => {
-  const users = await userService.getAllUsers();
+  const users: UserEntryNoPassword[] | { 'users': string[] } = await userService.getAllUsers();
   // res.json(users)
   res.json(users);
 });
@@ -15,7 +16,7 @@ router.get('/', async (_req, res) => {
 router.get('/:id', async (req, res) => {
   const id = Number(req.params.id);
 
-  const user = await userService.getUserById(id);
+  const user: UserEntryNoPassword = await userService.getUserById(id);
 
   res.json(user);
 });

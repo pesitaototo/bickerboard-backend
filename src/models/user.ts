@@ -3,9 +3,9 @@ import { sequelize } from '../utils/db';
 
 class User extends Model {
   public id!: number;
-  public handle!: string;
+  public username!: string;
   public email!: string;
-  public passwordHash!: string;
+  public password!: string;
   public isAdmin!: boolean;
   public isEnabled!: boolean;
   public readonly createdAt!: Date;
@@ -18,7 +18,7 @@ User.init({
     primaryKey: true,
     autoIncrement: true
   },
-  handle: {
+  username: {
     type: DataTypes.STRING(20),
     allowNull: false,
     unique: true,
@@ -43,7 +43,7 @@ User.init({
       isEmail: true
     }
   },
-  passwordHash: {
+  password: {
     type: DataTypes.TEXT,
     allowNull: false
   },
@@ -59,7 +59,15 @@ User.init({
   sequelize,
   underscored: true,
   timestamps: true,
-  modelName: 'user'
+  modelName: 'user',
+  defaultScope: {
+    attributes: { exclude: ['password'] },
+  },
+  scopes: {
+    withPassword: {
+      attributes: { include: ['password'] },
+    }
+  }
 });
 
 export default User;

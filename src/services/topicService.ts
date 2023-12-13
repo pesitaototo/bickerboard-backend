@@ -1,4 +1,6 @@
-import { Topic, User } from '../models';
+import { Post, Topic, User } from '../models';
+import { toNewTopicEntry } from '../utils/topicsUtils';
+import { NewTopicEntry } from '../utils/types';
 import userService from './userService';
 
 const getAllTopics = async () => {
@@ -10,14 +12,29 @@ const getAllTopics = async () => {
     ]
   });
 
+  if (topics.length === 0) {
+    return {'topics': []};
+  }
+
   return topics;
 };
 
 const getTopicById = async (id: number) => {
-  const topic = await Topic.findByPk(id);
+  const topic = await Topic.findByPk(id,
+    {
+      include: [
+        {
+          model: Post,
+          include: [User]
+        },
+        {
+          model: User
+        }
+      ]
+    });
 
   if (!topic) {
-    throw new Error('topic id cannot be found');
+    throw new Error('topic not found');
   }
 
   return topic;
@@ -25,9 +42,9 @@ const getTopicById = async (id: number) => {
 
 const createTopic = async (topicInput: any) => {
   try {
-    const newTopic = topicInput;
+    const newTopic: NewTopicEntry = toNewTopicEntry(topicInput);
 
-    const createdTopic = await Topic.create(newTopic);
+    const createdTopic: Topic = await Topic.create(newTopic);
     return createdTopic;
   } catch (err) {
     throw new Error(`error creating topic ${err}`);
@@ -41,7 +58,7 @@ const getTopicIfUserIsOwner = async (topicId: number, token: string) => {
 
   const topic = await Topic.findByPk(topicId);
   if (!topic || topic.userId !== userId) {
-    throw new Error('InsufficientPermission');
+    throw new Error('insufficient permission');
   }
 
   return topic;

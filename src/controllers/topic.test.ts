@@ -14,7 +14,7 @@ beforeAll(async () => {
   await api
     .post('/api/users')
     .send({
-      handle: 'testuser',
+      username: 'testuser',
       email: 'test@test.com',
       password: 'password',
     });
@@ -22,7 +22,7 @@ beforeAll(async () => {
   const response = await api
     .post('/api/login')
     .send({
-      handle: 'testuser',
+      username: 'testuser',
       password: 'password'
     });
 
@@ -199,14 +199,14 @@ describe('when user has a valid token', () => {
         await api
           .post('/api/users')
           .send({
-            handle: 'anotheruser',
+            username: 'anotheruser',
             email: 'anotheruser@example.com',
             password: 'anotherpassword'
           });
         const response = await api
           .post('/api/login')
           .send({
-            handle: 'anotheruser',
+            username: 'anotheruser',
             password: 'anotherpassword'
           });
         anotherToken = response.body.token;

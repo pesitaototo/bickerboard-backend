@@ -22,22 +22,22 @@ describe('when a user exists', () => {
     await api
       .post('/api/users')
       .send({
-        handle: 'testuser',
+        username: 'testuser',
         email: 'test@test.com',
         password: 'password',
       });
     const response = await api
       .post('/api/login')
       .send({
-        handle: 'testuser',
+        username: 'testuser',
         password: 'password'
       });
     token = response.body.token;
   });
 
-  test('cannot create a user with the same handle', async () => {
+  test('cannot create a user with the same username', async () => {
     const newUser = {
-      handle: 'testuser',
+      username: 'testuser',
       email: 'another@test.com',
       password: 'testpassword'
     };
@@ -48,7 +48,7 @@ describe('when a user exists', () => {
       .expect(400)
       .expect('Content-Type', /application\/json/);
 
-    expect(result.body.error).toContain('handle must be unique');
+    expect(result.body.error).toContain('username must be unique');
 
   });
 
@@ -69,7 +69,7 @@ describe('when a user exists', () => {
     await api
       .post('/api/users')
       .send({
-        handle: 'newuser',
+        username: 'newuser',
         email: 'test2@test.com',
         password: 'newuserpass123',
       })
@@ -79,7 +79,7 @@ describe('when a user exists', () => {
     const response = await api
       .post('/api/login')
       .send({
-        handle: 'newuser',
+        username: 'newuser',
         password: 'newuserpass123'
       })
       .expect(200);
@@ -94,7 +94,7 @@ describe('when a user exists', () => {
       .get('/api/users')
       .expect(200);
     expect(users.body).toHaveLength(2);
-    expect(users.body[1].handle).toContain('testuser');
+    expect(users.body[1].username).toContain('testuser');
   });
 
   test('when user is deleted, all topics by user is also deleted', async () => {
@@ -127,7 +127,7 @@ describe('when a user exists', () => {
 describe('when a user does not exist', () => {
   test('we can create a user with a password that is at least 8 characters', async () => {
     const newUser = {
-      handle: 'testuser1',
+      username: 'testuser1',
       email: 'testemail@example.com',
       password: 'talofalava',
     };
@@ -141,13 +141,13 @@ describe('when a user does not exist', () => {
     const response = await api.get('/api/users');
 
     expect(response.body).toHaveLength(1);
-    expect(response.body[0].handle).toContain('testuser1');
+    expect(response.body[0].username).toContain('testuser1');
     expect(response.body[0].email).toContain('testemail@example.com');
   });
 
   test('we can NOT create a user with password less than 8 characters', async () => {
     const newUser = {
-      handle: 'testuser2',
+      username: 'testuser2',
       email: 'testemail@example.com',
       password: 'hello',
     };
@@ -163,7 +163,7 @@ describe('when a user does not exist', () => {
 
   // test('we can NOT create a user with username more than 20 characters', async () => {
   //   const newUser = {
-  //     handle: 'abcdefghijklmnopqrstuvwxyz',
+  //     username: 'abcdefghijklmnopqrstuvwxyz',
   //     email: 'testemail@example.com',
   //     password: 'thisismypassword',
   //   };

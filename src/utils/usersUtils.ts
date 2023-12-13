@@ -1,15 +1,12 @@
 import { NewUserEntry } from './types';
+import { isString } from './utilsCommon';
 
-const isString = (text: unknown): text is string => {
-  return typeof text === 'string' || text instanceof String;
-};
-
-const parseHandle = (handle: unknown): string => {
-  if (!isString(handle)) {
-    throw new Error('bad or missing handle');
+const parseHandle = (username: unknown): string => {
+  if (!isString(username)) {
+    throw new Error('bad or missing username');
   }
 
-  return handle;
+  return username;
 };
 
 const parseEmail = (email: unknown): string => {
@@ -38,11 +35,11 @@ export const toNewUserEntry = (object: unknown): NewUserEntry => {
     throw new Error('bad user data');
   }
 
-  if ('handle' in object && 'email' in object && 'password' in object) {
+  if ('username' in object && 'email' in object && 'password' in object) {
     const newUser: NewUserEntry = {
-      handle: parseHandle(object.handle),
+      username: parseHandle(object.username),
       email: parseEmail(object.email),
-      passwordHash: parsePassword(object.password)
+      password: parsePassword(object.password)
     };
 
     return newUser;

@@ -1,11 +1,31 @@
 
 interface BaseUserEntry {
   id: number;
-  handle: string;
+  username: string;
   email: string;
-  passwordHash: string;
+  password: string;
 }
 
-export type UserEntry = Omit<BaseUserEntry, 'passwordHash'>
+export interface UserEntryNoPassword extends Omit<BaseUserEntry, 'password'> {
+  isEnabled: boolean;
+}
 
 export type NewUserEntry = Omit<BaseUserEntry, 'id'>
+
+interface BaseTopicEntry {
+  id: number;
+  title: string;
+  body: string;
+  userId: number;
+}
+
+export type NewTopicEntry = Omit<BaseTopicEntry, 'id'>
+
+interface BasePostEntry {
+  id: number;
+  body: string;
+  userId: number;
+  topicId: number;
+}
+
+export type NewPostEntry = Omit<BasePostEntry, 'id'>
