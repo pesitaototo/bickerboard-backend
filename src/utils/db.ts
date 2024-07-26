@@ -6,6 +6,7 @@ import bootstrap from '../config/bootstrap';
 
 // console.log("DATABASE_URL: ", DATABASE_URL);
 if (!DATABASE_URL) {
+  console.log("BAD Database URL: ", DATABASE_URL)
   process.exit(1);
 }
 
