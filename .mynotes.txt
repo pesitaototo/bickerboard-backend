@@ -1,0 +1,16 @@
+
+Project Archeitecture
+Start the develoment database:
+docker compose -f docker-compose.dev.yml up -d
+
+See docker processes:
+docker ps
+
+Kill docker container:
+docker kill <partial-container-name>
+
+Get into docker:
+docker exec -it <partial-container-name> bash
+
+Get into postgresql prompt inside the container:
+psql -U postgres
