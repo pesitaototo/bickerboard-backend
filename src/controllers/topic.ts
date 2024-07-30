@@ -4,7 +4,7 @@ import topicService from '../services/topicService';
 import { authorizeToken } from '../utils/middleware';
 import userService from '../services/userService';
 import postService from '../services/postService';
-import { NewTopicEntry } from '../utils/types';
+import { NewPostEntry, NewTopicEntry } from '../utils/types';
 
 // get all topics
 router.get('/', async (_req, res) => {
@@ -45,8 +45,8 @@ router.post('/:topicId/new', authorizeToken, async (req: Request, res: Response)
 
   const userId = await userService.getUserIdByToken(req.token);
 
-  const newPost = {
-    ...req.body,
+  const newPost: NewPostEntry = {
+    body: req.body.body,
     topicId,
     userId
   };
