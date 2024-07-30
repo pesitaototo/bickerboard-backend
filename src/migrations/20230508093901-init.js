@@ -21,13 +21,9 @@ module.exports = {
             args: ['^[a-z0-9]+$', 'i'],
             msg: 'Username must be alphanumeric'
           },
-          max: {
-            args: 20,
-            msg: 'Username can only be 20 characters'
-          },
-          min: {
-            args: 4,
-            msg: 'Username must be at least 4 characters'
+          len: {
+            args: [4, 20],
+            msg: 'Username must be between 4 and 20 characters.'
           }
         }
       },
@@ -42,7 +38,11 @@ module.exports = {
         type: DataTypes.TEXT,
         allowNull: false,
       },
-      is_admin  : {
+      is_admin: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
+      },
+      is_moderator: {
         type: DataTypes.BOOLEAN,
         defaultValue: false
       },

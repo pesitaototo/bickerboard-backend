@@ -3,7 +3,7 @@ import 'express-async-errors'; // must be imported before creating any express.R
 import usersRouter from './controllers/user';
 import postsRouter from './controllers/post';
 import topicsRouter from './controllers/topic';
-import { connectToDatabase } from './utils/db';
+import { connectToDatabase, rollbackMigration } from './utils/db';
 import { authorizeToken, errorHandler } from './utils/middleware';
 import loginRouter from './controllers/login';
 import cors from 'cors';
@@ -30,6 +30,7 @@ const start = async () => {
     app.listen(3001, () => {
       console.log('Server started');
     });
+    // await rollbackMigration();
   }
 };
 
