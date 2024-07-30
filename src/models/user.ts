@@ -27,13 +27,9 @@ User.init({
         args: ['^[a-z0-9]+$', 'i'],
         msg: 'Username must be alphanumeric'
       },
-      max: {
-        args: [19],
-        msg: 'Username can only be 20 characters'
-      },
-      min: {
-        args: [4],
-        msg: 'Username must be at least 4 characters'
+      len: {
+        args: [4, 20],
+        msg: 'Username must be between 4 and 20 characters.'
       }
     }
   },
@@ -48,6 +44,10 @@ User.init({
     allowNull: false
   },
   isAdmin: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false
+  },
+  isModerator: {
     type: DataTypes.BOOLEAN,
     defaultValue: false
   },

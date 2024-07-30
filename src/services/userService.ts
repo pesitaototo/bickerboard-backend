@@ -85,8 +85,9 @@ const createUser = async (userInfo: any) => {
   } catch (err) {
     if (err instanceof UniqueConstraintError) {
       throw new Error(`${err.errors[0].message}`);
+    } else {
+      throw new Error(`${err}`);
     }
-    throw new Error('something unexpected happened' + err);
   }
 };
 

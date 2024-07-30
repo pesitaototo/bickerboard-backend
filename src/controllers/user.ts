@@ -1,7 +1,8 @@
 import express, { Request, Response } from 'express';
 import userService from '../services/userService';
 import { authorizeToken } from '../utils/middleware';
-import { UserEntryNoPassword } from '../utils/types';
+import { NewUserEntry, UserEntryNoPassword } from '../utils/types';
+import { toNewUserEntry } from '../utils/usersUtils';
 const router = express.Router();
 // const router = require('express').Router()
 
@@ -25,7 +26,13 @@ router.get('/:id', async (req, res) => {
 // todo: send email verification to user email before enabling their account
 // captcha protect endpoint to prevent abuse
 router.post('/', async (req, res) => {
-  const createdUser = await userService.createUser(req.body);
+  const { username, password, email } = req.body;
+
+  let newUser: NewUserEntry = {
+    username, password, email
+  }
+
+  const createdUser: NewUserEntry = await userService.createUser(newUser);
   res.status(201).json(createdUser);
 });
 

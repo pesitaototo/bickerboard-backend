@@ -14,3 +14,6 @@ docker exec -it <partial-container-name> bash
 
 Get into postgresql prompt inside the container:
 psql -U postgres
+
+// Make new migration
+npx sequelize-cli migration:generate --name use-len-to-validate-username-length
