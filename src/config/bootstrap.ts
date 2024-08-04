@@ -1,15 +1,16 @@
 import dotenv from 'dotenv';
 import userService from '../services/userService';
-import { NewTopicEntry, NewUserEntry } from '../utils/types';
+import { NewTopicEntry, NewUserEntry, NewUserEntryConfirmPassword } from '../utils/types';
 import { Topic } from '../models';
 import topicService from '../services/topicService';
 import postService from '../services/postService';
 dotenv.config();
 
 const populateUser = async () => {
-  const devUser: NewUserEntry = {
+  const devUser: NewUserEntryConfirmPassword = {
     username: 'devuser',
     password: 'devuserpassword',
+    passwordConfirm: 'devuserpassword',
     email: 'devuser@example.com'
   };
   await userService.createUser(devUser);

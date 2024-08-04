@@ -35,7 +35,11 @@ export const toNewUserEntry = (object: unknown): NewUserEntry => {
     throw new Error('bad user data');
   }
 
-  if ('username' in object && 'email' in object && 'password' in object) {
+  if ('username' in object && 'email' in object && 'password' in object && 'passwordConfirm' in object) {
+    if (object.password !== object.passwordConfirm) {
+      throw new Error('passwords does not match');
+    }
+
     const newUser: NewUserEntry = {
       username: parseHandle(object.username),
       email: parseEmail(object.email),

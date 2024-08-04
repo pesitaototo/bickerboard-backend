@@ -11,6 +11,7 @@ export interface UserEntryNoPassword extends Omit<BaseUserEntry, 'password'> {
 }
 
 export type NewUserEntry = Omit<BaseUserEntry, 'id'>
+export type NewUserEntryConfirmPassword = NewUserEntry & { passwordConfirm: string; }
 
 interface BaseTopicEntry {
   id: number;
